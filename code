@@ -1,0 +1,67 @@
+import math
+
+f = 0.9;            # scale factory
+E = 70 * 10**3;        # young modulu [GPa]
+ro = 2.7 * 10**(-9);     # denisity [tone/mm]
+pos = 0.33330;               # Poisson's ratio
+T = 0.008;                     # edn time simulation
+mass = 7.29 * 10**(-8);         # geometry mass [tone]
+
+
+l =  0.05;            # largest edge lenght of elemnt  [mm]
+#d =                   # largest diagonal lenght of element  [mm]
+A =   0.0025;             # smalest alement area   [mm]
+
+# Beam
+#c = math.sqrt( E / ro );           # speed of sound in the material
+
+# Shell
+# c = math.sqrt( E / (ro * (1 - pos**2)));           # speed of sound in the material
+
+# Solid
+c = math.sqrt( ( E * (1 - pos) ) / (ro * (1 + pos) *  (1 - 2 * pos) ) );           # speed of sound in the material
+
+
+print("Speed of sound in the material (c):", c, "mm/s")
+
+L = A/(l)           # characteristic lenght of the smallest element
+#L = A/d;             # characteristic lenght of the smallest element
+#L = sqrt(A)          # characteristic lenght of the smallest element
+
+print("Characteristic lenght of the smallest element (L):", L, "mm")
+
+t_crit = f * L / c;
+
+print("Cricital time (c):", t_crit, "s")
+
+simulation_time = T/t_crit
+simulation_time_hours = simulation_time/(3600 * 1000);
+
+print("Simulation time will be :", simulation_time_hours, "h")
+
+# Calculating mass scaling
+
+simulation_time_hours_m = 0.52361111 * 3600 * 1000 ;
+t_crit_m = T/simulation_time_hours_m;
+c = f * L/ t_crit_m;
+
+# Beam
+# ro_m = c**2/E;  # speed of sound in the material
+
+# Shell
+# ro_m = E / (c**2 * (1 - pos**2));           # speed of sound in the material
+
+# Solid
+ro_m =  ( E * (1 - pos) ) / (c**2 * (1 + pos) *  (1 - 2 * pos) ) ;           # speed of sound in the material
+
+#destiny increas
+RO =  ((ro_m/ro)* 100) - 100;
+
+V_start = mass/ro;
+Mass_end = V_start * ro_m;
+Mass_scaling = ((Mass_end/mass) * 100) - 100;
+
+print()
+print("Simulation time will be :", simulation_time_hours_m/(3600 * 1000), "h")
+print("Mass scaling its :", Mass_scaling, "%")
+print("Cricital time (c):", t_crit_m, "s")
